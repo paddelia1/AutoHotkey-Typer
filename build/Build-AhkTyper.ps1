@@ -5,7 +5,7 @@ Author            : Philippe Addelia
 Created           : 2026-10-25 04:30 EDT
 Modified          : 2026-10-25 09:35 EDT
 Preferred Location: build\ (repo AutoHotkey-Typer)
-Version           : 1.4
+Version           : 1.5.0.1
 Purpose           : Compiles src\AutoHotkey-Typer.ahk into dist\AHK-Typer.exe
                     with Ahk2Exe and the AutoHotkey v2 64-bit base, then writes
                       dist\AHK-Typer.exe.sha256   (hash file, sha256sum format)

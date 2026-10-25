@@ -2,7 +2,7 @@
 
 ## 1.5.0.1 - 2026-10-25
 
-- Docs only (no new .exe): setup guide section "Start automatically when
+- Docs (the program itself is unchanged from 1.5): setup guide section "Start automatically when
   you sign in to Windows" - Startup folder by mouse or PowerShell, Unblock
   the downloaded file, check / pause / remove in Task Manager; link from
   the README quick start

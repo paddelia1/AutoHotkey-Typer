@@ -1,7 +1,7 @@
 # AutoHotkey-Typer
 Build a secure AutoHotkey 2.0 typer for strings, passwords and more 
 
-**Version 1.5** - download **AHK-Typer.exe** from the
+**Version 1.5.0.1** - download **AHK-Typer.exe** from the
 [latest release](https://github.com/paddelia1/AutoHotkey-Typer/releases/latest)
 
 AutoHotkey-Typer types text you use often - email addresses, signatures,
