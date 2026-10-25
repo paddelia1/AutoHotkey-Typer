@@ -1,18 +1,15 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
+# --- AutoHotkey-Typer ---
 
-# Other files and folders
-.settings/
+# Personal snippet files (portable mode) - never commit, even encrypted
+snippets.ini
+snippets*.ini
+*.ini.bak
+# ...but the shipped example file has no personal data and IS tracked
+!examples/snippets.sample.ini
 
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
+# Compiled output - published as GitHub Release assets, not committed
+*.exe
+dist/
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Windows clutter
+Thumbs.db
