@@ -3,9 +3,9 @@ Script            : AutoHotkey-Typer - SecretDialog
 FileName          : SecretDialog.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 23:30 EDT
-Modified          : 2026-10-25 04:30 EDT
+Modified          : 2026-10-25 10:55 EDT
 Preferred Location: src\lib\
-Version           : 1.4
+Version           : 1.5
 Purpose           : One-page dialog to add, edit or delete a snippet -
                     plain text or encrypted secret (1.2):
                       - name (pick an existing snippet to edit it)
@@ -28,14 +28,6 @@ ShowSnippetDialog(*) => ShowSecretDialog()
 
 ShowSecretDialog(*) {
     global SecretDlg
-    ; 1.4: the example file is replaced at every start - edit My snippets
-    if UsingExamples {
-        if (MsgBox("You are using the EXAMPLE snippets, which are read-only."
-                . "`n`nSwitch to My snippets to add or edit your own?"
-                , APP_NAME, "YesNo Iconi") = "Yes")
-            SwitchSnippetSet("mine")
-        return
-    }
     if IsObject(SecretDlg) {
         SecretDlg.Show()
         return

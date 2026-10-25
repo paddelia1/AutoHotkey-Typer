@@ -3,9 +3,9 @@ Script            : AutoHotkey-Typer - Config
 FileName          : Config.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 04:30 EDT
+Modified          : 2026-10-25 10:55 EDT
 Preferred Location: src\lib\
-Version           : 1.4
+Version           : 1.5
 Purpose           : Locates, creates, reads and writes the snippet file
                     (snippets.ini). Secrets are stored DPAPI-encrypted.
 */
@@ -23,16 +23,34 @@ ResolveConfigFile() {
     return A_AppData "\" APP_NAME "\snippets.ini"
 }
 
-; Creates the personal file (no snippets, only the format help) on first
-; run. Returns true when a new file was created.
-EnsureConfigExists(file) {
+; Creates the snippet file on first run (1.5): a copy of the shipped
+; template (examples\snippets.sample.ini - note on top + example snippets).
+; templateFile is a temporary copy made by FileInstall in the main script;
+; if it is missing, a file with only the format help is created instead.
+; Returns true when a new file was created.
+EnsureConfigExists(file, templateFile := "") {
     if FileExist(file)
         return false
     SplitPath(file, , &dir)
     DirCreate(dir)
+    text := (templateFile != "" && FileExist(templateFile))
+        ? FileRead(templateFile)
+        : DefaultConfigText()
     ; UTF-16 so the Windows INI functions read accented characters correctly
-    FileAppend(DefaultConfigText(), file, "UTF-16")
+    FileAppend(text, file, "UTF-16")
     return true
+}
+
+; Names of the example snippets (created on first run, prefix "Ex - ")
+ExampleSnippetNames() {
+    names := []
+    try sections := IniRead(ConfigFile)
+    catch
+        return names
+    for name in StrSplit(sections, "`n", "`r")
+        if (SubStr(name, 1, 5) = "Ex - ")
+            names.Push(name)
+    return names
 }
 
 ; ---------------------------------------------------------------------
@@ -222,11 +240,9 @@ DefaultConfigText() {
     return "
     (
 ; =====================================================================
-;  AHK-Typer - MY snippets
+;  AHK-Typer - your snippet file
 ;  Easiest: double-click the tray icon (Add / edit snippet).
 ;  Or edit this file, save it, then choose Reload from the tray menu.
-;
-;  Examples: tray icon > Snippet file > Example snippets.
 ;
 ;  One [section] per snippet. The section name is the snippet's name.
 ;
@@ -257,57 +273,4 @@ DefaultConfigText() {
 ; =====================================================================
 
     )"
-}
-
-; ---------------------------------------------------------------------
-;  My snippets / Example snippets (1.4)
-;  settings.ini sits next to the personal file:
-;    [General]
-;    Snippets=mine | examples
-; ---------------------------------------------------------------------
-SettingsFile() => DataDir "\settings.ini"
-
-; First run starts on the examples; an existing user keeps "mine"
-ReadSnippetSet(isFirstRun) {
-    set := IniRead(SettingsFile(), "General", "Snippets", "")
-    if (set != "mine" && set != "examples") {
-        set := isFirstRun ? "examples" : "mine"
-        try IniWrite(set, SettingsFile(), "General", "Snippets")
-    }
-    return set
-}
-
-SwitchSnippetSet(set) {
-    IniWrite(set, SettingsFile(), "General", "Snippets")
-    Reload()
-}
-
-SectionExistsIn(file, name) {
-    try sections := IniRead(file)
-    catch
-        return false
-    for s in StrSplit(sections, "`n", "`r")
-        if (s = name)
-            return true
-    return false
-}
-
-; Copies every example into My snippets, skipping names that already
-; exist there. Returns {Added, Skipped}.
-CopyExamplesToMine() {
-    added := 0, skipped := 0
-    try sections := IniRead(SampleFile)
-    catch
-        return {Added: 0, Skipped: 0}
-    for name in StrSplit(sections, "`n", "`r") {
-        if (name = "")
-            continue
-        if SectionExistsIn(MyConfigFile, name) {
-            skipped++
-            continue
-        }
-        IniWrite(IniRead(SampleFile, name), MyConfigFile, name)
-        added++
-    }
-    return {Added: added, Skipped: skipped}
 }

@@ -5,9 +5,9 @@ Script            : AutoHotkey-Typer
 FileName          : AutoHotkey-Typer.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 04:30 EDT
+Modified          : 2026-10-25 10:55 EDT
 Preferred Location: src\ (repo AutoHotkey-Typer)
-Version           : 1.4
+Version           : 1.5
 Purpose           : Types saved text snippets when you press a hotkey or type a
                     short abbreviation (hotstring).
                     Phase 1: core engine, snippet file, tray menu.
@@ -18,19 +18,20 @@ Purpose           : Types saved text snippets when you press a hotkey or type a
                     1.2   : one dialog for plain snippets and secrets.
                     1.3   : login sequence (username, Tab, secret, Enter).
                     1.4   : example snippets + switch, AHK-Typer.exe build.
+                    1.5   : examples created in the snippet file on first run.
 License           : Apache 2.0 - see LICENSE
 */
 
 ;@Ahk2Exe-SetName AHK-Typer
 ;@Ahk2Exe-SetDescription AHK-Typer - types snippets and encrypted secrets
-;@Ahk2Exe-SetVersion 1.4
+;@Ahk2Exe-SetVersion 1.5
 ;@Ahk2Exe-ExeName ..\dist\AHK-Typer.exe
 ;@Ahk2Exe-SetMainIcon res\AutoHotkey-Typer.ico
 ;@Ahk2Exe-AddResource res\AutoHotkey-Typer-suspended.ico, 206
 ;@Ahk2Exe-SetCopyright Philippe Addelia - Apache 2.0
 
 global APP_NAME    := "AutoHotkey-Typer"
-global APP_VERSION := "1.4"
+global APP_VERSION := "1.5"
 global APP_REPO    := "https://github.com/paddelia1/AutoHotkey-Typer"
 
 SetWorkingDir(A_ScriptDir)
@@ -50,21 +51,25 @@ Persistent()                ; stay running even if no snippet could be bound
 ; ---------------------------------------------------------------------
 ;  Startup
 ; ---------------------------------------------------------------------
-; My snippets (personal, never shipped)
-global MyConfigFile := ResolveConfigFile()
-isFirstRun          := EnsureConfigExists(MyConfigFile)
-SplitPath(MyConfigFile, , &dir)
-global DataDir := dir
+global ConfigFile := ResolveConfigFile()
+SplitPath(ConfigFile, , &DataDir)
 
-; Example snippets: shipped with the app (embedded in the .exe), copied
-; next to the personal file at every start so it is always current
-global SampleFile := DataDir "\snippets.sample.ini"
-try FileInstall("..\examples\snippets.sample.ini", SampleFile, 1)
+; First run: the snippet file is created from the shipped template
+; (examples\snippets.sample.ini, embedded in the .exe) - a note on top plus
+; example snippets, so the app works right away.
+; Ahk2Exe only embeds the file when FileInstall starts its own line.
+template := A_Temp "\AHK-Typer-template.ini"
+if !FileExist(ConfigFile) {
+    try {
+        FileInstall("..\examples\snippets.sample.ini", template, 1)
+    }
+}
+isFirstRun := EnsureConfigExists(ConfigFile, template)
+try FileDelete(template)
 
-; Which set is active - ConfigFile is the file actually loaded
-global UsingExamples := (ReadSnippetSet(isFirstRun) = "examples")
-                        && (FileExist(SampleFile) != "")
-global ConfigFile    := UsingExamples ? SampleFile : MyConfigFile
+; Clean up files used by 1.4 only (separate example file and its switch)
+for old in ["snippets.sample.ini", "settings.ini"]
+    try FileDelete(DataDir "\" old)
 
 loaded  := LoadSnippets(ConfigFile)
 result  := RegisterSnippets(loaded.Snippets)

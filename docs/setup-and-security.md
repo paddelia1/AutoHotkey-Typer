@@ -1,6 +1,6 @@
 # Setup and security guide
 
-Version: 1.4
+Version: 1.5
 
 This guide covers what you need to run AutoHotkey-Typer, where your snippet
 file lives, how secrets are encrypted, and how to keep the real file safe.
@@ -52,10 +52,12 @@ Options:
 
 **First start**
 
-The app starts on the **example snippets** and a welcome message explains
-how to try them (Notepad: `;hi`, anywhere: `;addr`). Your own, empty
-snippet file is created at the same time. Switch to it with tray icon >
-**Snippet file > My snippets**. See [examples.md](examples.md).
+Your snippet file is created with **example snippets** and a welcome note
+at the top, so the app works right away (anywhere: `;addr`, Notepad: `;hi`,
+Ctrl + Alt + Shift + S). The examples are named `Ex - ...`. When you are
+ready, remove them all with tray icon > **Snippet file > Remove example
+snippets**, or one by one with **Delete** in Add / edit snippet. See
+[examples.md](examples.md).
 
 ### Start with Windows
 
@@ -70,27 +72,15 @@ snippet file is created at the same time. Switch to it with tray icon >
 | Default | `%AppData%\AutoHotkey-Typer\snippets.ini` | Always, unless portable mode applies |
 | Portable | `snippets.ini` next to the script or `.exe` | Only when that file exists |
 
-Two more files sit in the same folder:
-
-| File | Content |
-|---|---|
-| `snippets.sample.ini` | The example snippets. Rewritten from the app at every start - changes made to it are lost |
-| `settings.ini` | Which set is active: `Snippets=mine` or `Snippets=examples` |
-
-### My snippets and Example snippets
-
-Tray icon > **Snippet file**:
+There is only this one file. Tray icon > **Snippet file**:
 
 | Item | What it does |
 |---|---|
-| My snippets | Use your own file (the normal mode) |
-| Example snippets | Use the examples - read-only, for trying things out |
-| Copy examples into my snippets... | Adds every example to your file, skipping names you already use. Edit or delete the copies afterwards |
-| Edit my snippet file | Opens your file in Notepad, for bulk changes. Reload afterwards |
+| Edit snippet file | Opens it in Notepad, for bulk changes. Reload afterwards |
 | Open snippet folder | Opens the folder in Explorer |
+| Remove example snippets... | Deletes every snippet named `Ex - ...` (the first-run examples). Your own snippets and secrets are not touched |
 
-Only one set is active at a time. The examples contain no real data and no
-secrets.
+The examples contain no real data and no secrets.
 
 The default location is per user, protected by Windows file permissions,
 and not inside OneDrive or a git folder. **Keep it there** unless you have a
@@ -130,7 +120,7 @@ Switching an existing snippet between the two types:
 - **Secret -> Plain text**: you are asked to confirm, because the value will
   then be stored unencrypted. Type the text again; the secret is removed.
 
-**Snippet file > Edit my snippet file** in the tray menu still opens the
+**Snippet file > Edit snippet file** in the tray menu still opens the
 file in Notepad, for bulk changes.
 
 Only the encrypted form is written to the file. You never type `Secret=` by

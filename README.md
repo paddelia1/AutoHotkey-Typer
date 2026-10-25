@@ -1,7 +1,7 @@
 # AutoHotkey-Typer
 Build a secure AutoHotkey 2.0 typer for strings, passwords and more 
 
-**Version 1.4** - download **AHK-Typer.exe** from the
+**Version 1.5** - download **AHK-Typer.exe** from the
 [latest release](https://github.com/paddelia1/AutoHotkey-Typer/releases/latest)
 
 AutoHotkey-Typer types text you use often - email addresses, signatures,
@@ -47,14 +47,14 @@ The red **T** icon appears in the system tray.
 - **Shortcut checker**: hotkeys that would break Windows are refused;
   hotkeys that clash with common shortcuts (Ctrl+T, Ctrl+C, AltGr...) are
   reported
-- **Example snippets** to try right away, and a one-click switch between
-  the examples and your own snippets
+- **Works on the first start**: your snippet file is created with example
+  snippets to try right away; remove them in one click when you are ready
 - Text is typed exactly as written (no AutoHotkey escaping), and the
   clipboard is never used
 - Duplicate and invalid triggers are reported at startup, not silently ignored
 - Tray menu: Add / edit snippet (also on double-click), Snippet file
-  (My snippets / Example snippets, copy examples, edit, open folder),
-  Reload, Suspend, About, Exit. Red tray icon, grey while suspended
+  (edit, open folder, remove example snippets), Reload, Suspend, About,
+  Exit. Red tray icon, grey while suspended
 - Snippet file stored in `%AppData%\AutoHotkey-Typer`, outside OneDrive and
   git folders, with a warning if it ends up in a synced folder
 
@@ -62,15 +62,14 @@ The red **T** icon appears in the system tray.
 
 1. Start **AHK-Typer.exe** (or `src\AutoHotkey-Typer.ahk` with
    [AutoHotkey v2](https://www.autohotkey.com/v2/) installed).
-2. The first start uses the **example snippets**. Open Notepad and type
-   `;hi`, or type `;addr` anywhere. More in
-   [docs/examples.md](docs/examples.md).
-3. Ready for your own? Right-click the tray icon > **Snippet file >
-   My snippets**.
-4. Double-click the tray icon to open **Add / edit snippet**: choose
-   **Plain text** or **Secret (encrypted)**, set a trigger, **Save**.
-5. To keep some examples: **Snippet file > Copy examples into my snippets**,
-   then edit or delete the copies.
+2. It works right away: your snippet file is created with **example
+   snippets**. Type `;addr` anywhere, or `;hi` in Notepad, or press
+   **Ctrl + Alt + Shift + S**. All examples: [docs/examples.md](docs/examples.md).
+3. Add your own: double-click the tray icon to open **Add / edit snippet**,
+   choose **Plain text** or **Secret (encrypted)**, set a trigger, **Save**.
+4. When you no longer need the examples (named `Ex - ...`): right-click the
+   tray icon > **Snippet file > Remove example snippets**. Your own
+   snippets are not touched.
 
 ## Snippet file
 
@@ -116,11 +115,9 @@ Submit=1
 Each snippet needs a `Hotkey`, a `Hotstring`, or both, and a `Text` or a
 `Secret`.
 
-**Where it lives:** `%AppData%\AutoHotkey-Typer\snippets.ini` (My
-snippets), next to `snippets.sample.ini` (the examples, refreshed at every
-start) and `settings.ini` (which set is active).
-**Portable mode:** put a `snippets.ini` next to the `.exe` (or script) and
-it is used instead, with the other two files beside it.
+**Where it lives:** `%AppData%\AutoHotkey-Typer\snippets.ini` - one file,
+yours. **Portable mode:** put a `snippets.ini` next to the `.exe` (or
+script) and it is used instead.
 
 > **Security:** `Text=` values are plain text - use the **Secret** type in **Add / edit snippet** for
 > passwords and keys. Prerequisites, safe storage and how the encryption works
@@ -149,7 +146,7 @@ to avoid and the AltGr trap on European keyboards, is in
 | Snippet dialog | Add / edit / delete plain snippets and secrets, hotkey builder, window picker | Done |
 | Conflict checker | Reserved Windows shortcuts, common app shortcuts, AltGr warning, live verdict | Done |
 | Login sequence | Username, Tab, password, optional Enter, in one hotkey | Done |
-| Examples | Example snippet file, switch between examples and my snippets, copy examples | Done |
+| Examples | Example snippets created in your file on the first start, removable in one click | Done |
 | Release | AHK-Typer.exe with SHA-256 in the release notes, build script | Done |
 | Docs | Where snippets cannot type (Windows credential dialogs, elevated windows), examples guide | Done |
 | Feedback | Tray message when a filtered snippet does not fire, naming the active window | Next |
@@ -164,7 +161,7 @@ src/AutoHotkey-Typer.ahk     main script (compiles to AHK-Typer.exe)
 src/lib/                     Config, Engine, Tray, Dpapi, Checker, SecretDialog,
                              PwGen, GeneratorDialog, Wordlist
 src/res/                     tray icons (active, suspended)
-examples/snippets.sample.ini example snippets, embedded in the .exe
+examples/snippets.sample.ini first-run template: welcome note + example snippets, embedded in the .exe
 build/Build-AhkTyper.ps1     builds dist/AHK-Typer.exe, its SHA-256 and release notes
 docs/                        user documentation
 dist/                        build output (not committed - published as Releases)

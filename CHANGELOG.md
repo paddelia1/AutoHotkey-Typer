@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.5 - 2026-10-25
+
+- **One snippet file again** - simpler than the 1.4 switch:
+  - on the first start the snippet file is created from
+    `examples/snippets.sample.ini`: a welcome note at the top plus the
+    example snippets, so the app works immediately
+  - tray > **Snippet file > Remove example snippets** deletes every snippet
+    named `Ex - ...`; your own snippets and secrets are not touched
+  - removed: My snippets / Example snippets switch, Copy examples,
+    `settings.ini` and the separate example file (both deleted at startup
+    if left over from 1.4); existing snippet files are not changed
+- Fix: the example template is now really embedded in AHK-Typer.exe
+  (Ahk2Exe only embeds files when `FileInstall` starts its own line)
+- Docs updated for the single file
+
 ## 1.4 - 2026-10-25
 
 - **AHK-Typer.exe**: distributed as a single executable on the GitHub

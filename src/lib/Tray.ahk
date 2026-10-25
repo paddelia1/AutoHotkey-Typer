@@ -3,9 +3,9 @@ Script            : AutoHotkey-Typer - Tray
 FileName          : Tray.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 04:30 EDT
+Modified          : 2026-10-25 10:55 EDT
 Preferred Location: src\lib\
-Version           : 1.4
+Version           : 1.5
 Purpose           : Tray menu, About box, first-run welcome and the startup
                     problem / warning report.
                     1.0.3 : Add secret moved to SecretDialog.ahk (one page).
@@ -14,21 +14,18 @@ Purpose           : Tray menu, About box, first-run welcome and the startup
                             default action; Notepad editing renamed.
                     1.4   : Snippet file submenu - My snippets / Example
                             snippets, copy examples into my snippets.
+                    1.5   : one snippet file again - examples are created in
+                            it on first run; Remove example snippets.
 */
 
 BuildTrayMenu(count) {
     A_IconTip := APP_NAME " " APP_VERSION " - " count " trigger" (count = 1 ? "" : "s")
-        . (UsingExamples ? " (examples)" : "")
 
     files := Menu()
-    files.Add("My snippets",      (*) => SwitchSnippetSet("mine"))
-    files.Add("Example snippets", (*) => SwitchSnippetSet("examples"))
-    files.Check(UsingExamples ? "Example snippets" : "My snippets")
+    files.Add("Edit snippet file",   (*) => Run('notepad.exe "' ConfigFile '"'))
+    files.Add("Open snippet folder", (*) => Run('explorer.exe /select,"' ConfigFile '"'))
     files.Add()
-    files.Add("Copy examples into my snippets...", CopyExamplesMenu)
-    files.Add()
-    files.Add("Edit my snippet file", (*) => Run('notepad.exe "' MyConfigFile '"'))
-    files.Add("Open snippet folder",  (*) => Run('explorer.exe /select,"' MyConfigFile '"'))
+    files.Add("Remove example snippets...", RemoveExamplesMenu)
 
     tray := A_TrayMenu
     tray.Delete()                                   ; remove the standard items
@@ -74,7 +71,6 @@ SetAppIcon(suspended := false) {
 
 ShowAbout(count) {
     MsgBox(APP_NAME " " APP_VERSION "`n`n"
-        . "Using: " (UsingExamples ? "Example snippets" : "My snippets") "`n"
         . "Triggers active: " count "`n"
         . "Snippet file:`n" ConfigFile "`n`n"
         . APP_REPO,
@@ -82,33 +78,36 @@ ShowAbout(count) {
 }
 
 ShowWelcome(count) {
-    if !UsingExamples {
-        MsgBox("Welcome to " APP_NAME "!`n`n"
-            . "Your snippet file was created here:`n" MyConfigFile "`n`n"
-            . "Double-click the tray icon to add your first snippet.",
-            APP_NAME, "Iconi")
-        return
-    }
     MsgBox("Welcome to " APP_NAME "!`n`n"
-        . "You are trying the EXAMPLE snippets. Open Notepad and type  `;hi"
-        . "  or  `;addr`n`n"
-        . "When you are ready for your own:`n"
-        . "  tray icon > Snippet file > My snippets`n"
-        . "  then double-click the tray icon to add a snippet.`n`n"
-        . "To keep some examples: Snippet file > Copy examples into my snippets.",
+        . "Your snippet file was created with EXAMPLE snippets, so you can "
+        . "try the app right away:`n`n"
+        . "  - type  `;addr  anywhere for a postal address`n"
+        . "  - type  `;hi  in Notepad`n"
+        . "  - press  Ctrl + Alt + Shift + S  for a signature`n`n"
+        . "The examples are named 'Ex - ...'. When you are ready for your own "
+        . "snippets and secrets, remove them:`n"
+        . "  tray icon > Snippet file > Remove example snippets`n`n"
+        . "To add your own, double-click the tray icon.",
         APP_NAME, "Iconi")
 }
 
-CopyExamplesMenu(*) {
-    if (MsgBox("Copy all example snippets into My snippets?`n`n"
-            . "Snippets whose name already exists in My snippets are skipped. "
-            . "You can edit or delete the copies afterwards.", APP_NAME
-            , "OKCancel Iconi") != "OK")
+; Deletes every snippet whose name starts with "Ex - " (the examples
+; created on first run). The user's own snippets are not touched.
+RemoveExamplesMenu(*) {
+    names := ExampleSnippetNames()
+    if (names.Length = 0) {
+        MsgBox("There are no example snippets left (names starting with "
+            . "'Ex - ').", APP_NAME, "Iconi")
         return
-    r := CopyExamplesToMine()
-    if (MsgBox(r.Added " example(s) copied, " r.Skipped " skipped (name already used)."
-            . "`n`nSwitch to My snippets now?", APP_NAME, "YesNo Iconi") = "Yes")
-        SwitchSnippetSet("mine")
+    }
+    if (MsgBox("Remove " names.Length " example snippet(s)?`n`n"
+            . "Only snippets whose name starts with 'Ex - ' are removed. "
+            . "Your own snippets and secrets are not touched.", APP_NAME
+            , "OKCancel Icon? Default2") != "OK")
+        return
+    for name in names
+        try IniDelete(ConfigFile, name)
+    Reload()
 }
 
 ReportProblems(problems, warnings := []) {

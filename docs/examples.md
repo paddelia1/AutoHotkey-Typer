@@ -1,11 +1,12 @@
 # Examples - learn AHK-Typer in 10 minutes
 
-Version: 1.4
+Version: 1.5
 
 ## 1. Try the examples
 
-On the first start AHK-Typer uses its **example snippets**. You can come
-back to them any time: tray icon > **Snippet file > Example snippets**.
+On the first start AHK-Typer creates your snippet file **with these
+example snippets** in it, so everything below works right away. They are
+named `Ex - ...` and contain no real data.
 
 | Type this / press this | Where | You get |
 |---|---|---|
@@ -30,20 +31,23 @@ Things to notice:
 - A **hotstring** (`;em`) is replaced the moment you finish typing it.
 - `;hi` does nothing in a browser: its **window filter** limits it to two
   programs.
-- The examples file is read-only. Double-clicking the tray icon offers to
-  switch to **My snippets**.
+- Open any example in **Add / edit snippet** (double-click the tray icon,
+  pick it from the Name list) to see how it is built.
 
-The file itself, with comments, is in
+When you are done trying them: tray icon > **Snippet file > Remove example
+snippets**. Keep the ones you like first by renaming them (pick one, change
+its name, Save) - only names starting with `Ex - ` are removed.
+
+The template, with comments, is
 [examples/snippets.sample.ini](../examples/snippets.sample.ini).
 
 ## 2. Your first snippet (2 minutes)
 
-1. Tray icon > **Snippet file > My snippets**.
-2. Double-click the tray icon. **Add / edit snippet** opens.
-3. **Name**: `My email`. **Type**: Plain text.
-4. **Trigger**: untick *Hotkey*, tick *Hotstring*, type `;me`.
-5. **Text**: your email address.
-6. **Save**. The app reloads; type `;me` anywhere.
+1. Double-click the tray icon. **Add / edit snippet** opens.
+2. **Name**: `My email`. **Type**: Plain text.
+3. **Trigger**: untick *Hotkey*, tick *Hotstring*, type `;me`.
+4. **Text**: your email address.
+5. **Save**. The app reloads; type `;me` anywhere.
 
 ## 3. Recipes
 
@@ -133,16 +137,17 @@ Two-page logins (username, Next, then password): set **Then press** to
 
 ### Switch a snippet off for a while
 
-Tray icon > **Snippet file > Edit my snippet file**, add `Enabled=0` to the
+Tray icon > **Snippet file > Edit snippet file**, add `Enabled=0` to the
 snippet, save, then **Reload**. Remove the line (or set `Enabled=1`) to
 switch it back on.
 
-### Keep some examples
+### Keep some examples, remove the rest
 
-Tray icon > **Snippet file > Copy examples into my snippets...**, switch to
-My snippets, then open each example in **Add / edit snippet** to change it
-or **Delete** it. The copies keep their `Ex - ` name prefix so they are easy
-to find.
+1. For each example you want to keep: open it in **Add / edit snippet**,
+   change the name (for example `Ex - Email address` to `Email address`)
+   and the text, **Save**.
+2. Tray icon > **Snippet file > Remove example snippets**: every snippet
+   still named `Ex - ...` is deleted.
 
 ## 4. Choosing good triggers
 
@@ -163,7 +168,7 @@ The full notation guide: [hotkey-notation.md](hotkey-notation.md).
 | Symptom | Likely cause | Fix |
 |---|---|---|
 | Nothing happens in one program | The snippet's window filter does not match it | Open the snippet, **Pick...** that program's window, **Add**, **Save** |
-| Nothing happens anywhere | The app is suspended (grey icon), or you are on the other snippet set | Tray > Suspend to resume; check **Snippet file** |
+| Nothing happens anywhere | The app is suspended (grey icon) | Tray > Suspend to resume |
 | Works on your PC, not in a Remote Desktop window | The app sees only the RDP window | Add `ahk_exe mstsc.exe` as a window rule, or run AHK-Typer on the remote PC |
 | Does not type into the Windows sign-in / RDP / UAC prompt | Blocked by Windows since January 2026 | Type it yourself - see [setup-and-security.md](setup-and-security.md#where-snippets-cannot-type) |
 | A login types into the wrong field | The app was slower than the program | Raise **Delay** to 300 |
