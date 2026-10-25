@@ -3,13 +3,15 @@ Script            : Build AHK-Typer release files
 FileName          : Build-AhkTyper.ps1
 Author            : Philippe Addelia
 Created           : 2026-10-25 04:30 EDT
-Modified          : 2026-10-25 09:35 EDT
+Modified          : 2026-10-25 12:05 EDT
 Preferred Location: build\ (repo AutoHotkey-Typer)
 Version           : 1.5.0.1
 Purpose           : Compiles src\AutoHotkey-Typer.ahk into dist\AHK-Typer.exe
                     with Ahk2Exe and the AutoHotkey v2 64-bit base, then writes
                       dist\AHK-Typer.exe.sha256   (hash file, sha256sum format)
-                      dist\release-notes.md       (CHANGELOG section + SHA-256)
+                      dist\release-notes.md       (CHANGELOG section + SHA-256;
+                                                    no title - GitHub shows the
+                                                    release title already)
                     and prints the GitHub CLI command to publish the release.
 
 Requirements      : AutoHotkey v2 with the Ahk2Exe compiler, version 1.1.36 or
@@ -118,8 +120,6 @@ if ($section.Count -eq 0) {
 
 $sizeKB = [math]::Round((Get-Item -LiteralPath $exe).Length / 1KB)
 $notes = @"
-# AHK-Typer $($version)
-
 $(($section -join "`n").Trim())
 
 ## Download
