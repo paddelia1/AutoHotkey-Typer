@@ -1,6 +1,6 @@
 # Setup and security guide
 
-Version: 1.5
+Version: 1.5.0.1
 
 This guide covers what you need to run AutoHotkey-Typer, where your snippet
 file lives, how secrets are encrypted, and how to keep the real file safe.
@@ -59,11 +59,72 @@ ready, remove them all with tray icon > **Snippet file > Remove example
 snippets**, or one by one with **Delete** in Add / edit snippet. See
 [examples.md](examples.md).
 
-### Start with Windows
+### Start automatically when you sign in to Windows
 
-1. Press **Win + R**, type `shell:startup`, press Enter.
-2. Right-click in the folder, choose *New > Shortcut*, and point it at
-   `AHK-Typer.exe` (or `src\AutoHotkey-Typer.ahk`).
+Windows starts everything in your personal **Startup folder** each time you
+sign in. Put a shortcut to AHK-Typer there.
+
+**Before you start**
+
+- Keep AHK-Typer.exe in its **final folder** (for example
+  `%LOCALAPPDATA%\Programs\AHK-Typer`), not in Downloads. The shortcut
+  stops working if the file is moved later.
+- Clear the "downloaded from the internet" mark once, so Windows does not
+  ask *"Do you want to run this file?"* at every sign-in. After checking the
+  SHA-256 (see above), right-click AHK-Typer.exe > **Properties** > tick
+  **Unblock** > **OK**, or in PowerShell:
+
+  ```powershell
+  Unblock-File -Path "$($env:LOCALAPPDATA)\Programs\AHK-Typer\AHK-Typer.exe"
+  ```
+
+**Option 1 - with the mouse**
+
+1. Press **Win + R**, type `shell:startup`, press **Enter**. Your Startup
+   folder opens.
+2. In a second Explorer window, go to the folder with **AHK-Typer.exe**.
+3. Drag AHK-Typer.exe into the Startup folder **with the right mouse
+   button**, release, and choose **Create shortcuts here**.
+   (A plain left drag would *move* the program - do not do that.)
+4. Sign out and back in (or restart): the red **T** appears in the tray.
+
+Running the script instead of the .exe? Create the shortcut to
+`src\AutoHotkey-Typer.ahk` the same way - AutoHotkey v2 must be installed.
+
+**Option 2 - with PowerShell** (no administrator rights needed)
+
+```powershell
+# Adjust this path to where you keep AHK-Typer.exe
+$exe     = "$($env:LOCALAPPDATA)\Programs\AHK-Typer\AHK-Typer.exe"
+$startup = [Environment]::GetFolderPath('Startup')
+$shell   = New-Object -ComObject WScript.Shell
+$link    = $shell.CreateShortcut("$($startup)\AHK-Typer.lnk")
+$link.TargetPath       = $exe
+$link.WorkingDirectory = Split-Path -Path $exe -Parent
+$link.Description      = 'AHK-Typer - start with Windows'
+$link.Save()
+Write-Host "Shortcut created: $($startup)\AHK-Typer.lnk"
+```
+
+**Check it, or turn it off**
+
+| To... | Do this |
+|---|---|
+| See that it is set up | **Task Manager** (Ctrl + Shift + Esc) > **Startup apps**: *AHK-Typer* is listed as **Enabled**. Also in **Settings > Apps > Startup** |
+| Pause it without deleting | Task Manager > Startup apps > AHK-Typer > **Disable** (or the switch in Settings > Apps > Startup) |
+| Remove it | Delete the shortcut: Win + R > `shell:startup` > delete **AHK-Typer**. In PowerShell: `Remove-Item "$([Environment]::GetFolderPath('Startup'))\AHK-Typer.lnk"` |
+
+Notes:
+
+- The Startup folder is per user: AHK-Typer starts only for your own Windows
+  account, which is also the only account that can decrypt your secrets.
+- It starts as a normal (not elevated) program. That is the right choice -
+  see *Elevated (admin) windows* in section 1. Avoid Task Scheduler's "Run
+  with highest privileges" unless you really need to type into admin
+  windows.
+- After updating to a new version, replace AHK-Typer.exe **in the same
+  folder** with the same name, and the shortcut keeps working. Unblock the
+  new file again.
 
 ## 3. Where the snippet file lives
 

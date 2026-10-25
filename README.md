@@ -70,6 +70,9 @@ The red **T** icon appears in the system tray.
 4. When you no longer need the examples (named `Ex - ...`): right-click the
    tray icon > **Snippet file > Remove example snippets**. Your own
    snippets are not touched.
+5. To start it automatically when you sign in to Windows, see
+   [Start automatically](docs/setup-and-security.md#start-automatically-when-you-sign-in-to-windows)
+   in the setup guide.
 
 ## Snippet file
 
