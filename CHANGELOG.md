@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.6 - 2026-10-25
+
+- **Optional secret lock** (`src/lib/PinLock.ahk`), tray > **Secret lock...**
+  - off by default; turned on with a PIN typed twice in one dialog
+  - after N minutes without keyboard or mouse use (default 15, 1 - 240),
+    the next secret asks for the PIN once, then types into the field you
+    were in; no more PIN until you are away again
+  - unlocking Windows (after Win + L) unlocks the secrets too - no PIN
+  - plain snippets are never locked
+  - PIN stored only as a salted PBKDF2-SHA256 hash (600,000 iterations,
+    Windows BCrypt) in the `[~AHK-Typer]` section of the snippet file
+  - 5 wrong PINs block new tries for 1 minute; changing or switching off
+    the lock needs the current PIN
+  - tray: **Lock secrets now**; tooltip shows "secrets locked"
+- Snippet names can no longer start with `~` (reserved for app settings)
+- Docs: secret lock, its limits, and Windows Dynamic Lock / screen lock
+
+## 1.5.1 - 2026-10-25
+
+- "Copyright 2026 Philippe Addelia" in the About box, in the .exe file
+  properties (Copyright and Company), and at the bottom of the README and
+  of every guide
+- Build script: release notes no longer repeat the release title
+
 ## 1.5.0.1 - 2026-10-25
 
 - Docs (the program itself is unchanged from 1.5): setup guide section "Start automatically when

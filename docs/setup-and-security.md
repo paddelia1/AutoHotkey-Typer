@@ -1,6 +1,6 @@
 # Setup and security guide
 
-Version: 1.5.0.1
+Version: 1.6
 
 This guide covers what you need to run AutoHotkey-Typer, where your snippet
 file lives, how secrets are encrypted, and how to keep the real file safe.
@@ -309,7 +309,55 @@ neutral name such as `[db1]`.
       is a convenience, not your only copy (see section 7).
 - [ ] Lock your PC (**Win + L**) when you step away. Anyone at your unlocked
       session can press the hotkeys.
+- [ ] Optionally turn on the **secret lock** (below) as a safety net for the
+      times you forget Win + L.
 - [ ] Use **Suspend** from the tray menu while screen sharing or presenting.
+
+### Optional secret lock (PIN after being away)
+
+At an unlocked, unattended PC anyone can open Notepad and press a secret's
+hotkey: the app would type the secret for them. **Win + L is the real fix.**
+The secret lock is a safety net for the times you forget it, designed not
+to get in your way:
+
+| Situation | PIN asked? |
+|---|---|
+| You are working (keyboard or mouse used in the last N minutes) | **No** |
+| You come back after N minutes away, without having locked Windows | **Once** - at the next secret. Then no more until you are away again |
+| You locked Windows (Win + L) and unlocked it again | **No** - unlocking Windows already proved it is you |
+| Plain snippets (email, signature...) | **Never** - only secrets are locked |
+
+**Turn it on:** tray icon > **Secret lock...** > tick *Ask for my PIN after
+I have been away*, set the minutes (default 15, from 1 to 240), type the PIN
+twice (at least 4 characters) > **Save**.
+
+When the PIN is asked, a small box appears; after the right PIN the secret
+is typed into the field you were in, as if nothing happened. The tray
+tooltip shows *secrets locked* while locked, and **Lock secrets now** in the
+tray menu locks them at once. Five wrong PINs block new tries for one
+minute. Changing the settings or switching the lock off asks for the
+current PIN.
+
+**What it is - and is not:**
+
+- The PIN itself is never stored. The snippet file keeps only a salted
+  PBKDF2-SHA256 hash (600,000 iterations, Windows BCrypt) in its
+  `[~AHK-Typer]` section.
+- It is a **gate against a casual person** at your desk. It is not extra
+  encryption: someone with the skills to edit that section or run their own
+  decryption code as you is not stopped - but neither would they be stopped
+  by anything else on an unlocked PC (they could also install a keylogger).
+- **Forgot the PIN?** Your secrets are not affected. Exit the app, delete the
+  `PinHash=` line under `[~AHK-Typer]` in the snippet file (tray > Snippet
+  file > Edit snippet file), start the app, and set a new PIN.
+
+**Better still, let Windows lock for you:**
+
+- **Dynamic Lock** - Settings > Accounts > Sign-in options > Dynamic lock:
+  Windows locks when your paired phone moves away with you.
+- **Screen lock after inactivity** - Settings > Personalization > Lock
+  screen > Screen saver: tick *On resume, display logon screen* and choose a
+  few minutes. Work PCs often enforce this already.
 
 ### Optional: tighten file permissions
 
@@ -326,7 +374,7 @@ icacls $file /inheritance:r /grant:r "$($env:USERNAME):(F)"
 | Protected | Not protected |
 |---|---|
 | Someone copying the file to another PC | Malware running under your own Windows account |
-| Another Windows user on the same PC | Someone using your unlocked session |
+| Another Windows user on the same PC | Someone using your unlocked session (the optional secret lock helps against a casual one - see section 5) |
 | The file leaking through a backup, email or accidental commit | Keyloggers or screen recorders - the value is typed, so it is visible to them |
 | Casual viewing in Notepad or over your shoulder | A person who knows your Windows password and has the file and your profile |
 
@@ -447,3 +495,7 @@ which is the "malware under your account" case in section 6.
 3. Press the hotkey in the allowed window: the real value is typed.
 4. Copy the file to another Windows account and run the app there: the
    secret is reported as "cannot be decrypted".
+
+---
+
+Copyright 2026 Philippe Addelia

@@ -3,9 +3,9 @@ Script            : AutoHotkey-Typer - SecretDialog
 FileName          : SecretDialog.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 23:30 EDT
-Modified          : 2026-10-25 10:55 EDT
+Modified          : 2026-10-25 12:55 EDT
 Preferred Location: src\lib\
-Version           : 1.5
+Version           : 1.6
 Purpose           : One-page dialog to add, edit or delete a snippet -
                     plain text or encrypted secret (1.2):
                       - name (pick an existing snippet to edit it)
@@ -462,8 +462,8 @@ BuildSecretDialog() {
         name := Trim(cbName.Text)
         if (name = "")
             return Fail("Please enter a name.")
-        if (name ~= "[\[\]=]" || SubStr(name, 1, 1) = ";")
-            return Fail("The name cannot contain  [  ]  =  or start with  `;")
+        if (name ~= "[\[\]=]" || SubStr(name, 1, 1) = ";" || SubStr(name, 1, 1) = "~")
+            return Fail("The name cannot contain  [  ]  =  or start with  `;  or  ~")
         if (name != st.editing && SectionExists(name))
             return Fail("A snippet named [" name "] already exists. "
                 . "Pick it from the list to edit it, or choose another name.")
@@ -596,7 +596,7 @@ ListSnippetNames() {
     catch
         return names
     for name in StrSplit(sections, "`n", "`r")
-        if (name != "")
+        if (name != "" && SubStr(name, 1, 1) != "~")    ; "~..." = app settings
             names.Push(name)
     return names
 }

@@ -3,9 +3,9 @@ Script            : AutoHotkey-Typer - Tray
 FileName          : Tray.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 10:55 EDT
+Modified          : 2026-10-25 12:55 EDT
 Preferred Location: src\lib\
-Version           : 1.5
+Version           : 1.6
 Purpose           : Tray menu, About box, first-run welcome and the startup
                     problem / warning report.
                     1.0.3 : Add secret moved to SecretDialog.ahk (one page).
@@ -16,10 +16,27 @@ Purpose           : Tray menu, About box, first-run welcome and the startup
                             snippets, copy examples into my snippets.
                     1.5   : one snippet file again - examples are created in
                             it on first run; Remove example snippets.
+                    1.5.1 : copyright line in the About box.
+                    1.6   : Secret lock... and Lock secrets now; tooltip
+                            shows when secrets are locked.
 */
 
+global TriggerCount := 0
+
+; Tooltip: version, triggers, and whether secrets are locked or suspended
+UpdateTrayTip() {
+    tip := APP_NAME " " APP_VERSION " - " TriggerCount " trigger"
+        . (TriggerCount = 1 ? "" : "s")
+    if A_IsSuspended
+        tip .= " - SUSPENDED"
+    else if (SecretLock.Enabled && SecretLock.Locked)
+        tip .= " - secrets locked"
+    A_IconTip := tip
+}
+
 BuildTrayMenu(count) {
-    A_IconTip := APP_NAME " " APP_VERSION " - " count " trigger" (count = 1 ? "" : "s")
+    global TriggerCount := count
+    UpdateTrayTip()
 
     files := Menu()
     files.Add("Edit snippet file",   (*) => Run('notepad.exe "' ConfigFile '"'))
@@ -31,6 +48,9 @@ BuildTrayMenu(count) {
     tray.Delete()                                   ; remove the standard items
     tray.Add("Add / edit snippet...", ShowSnippetDialog)
     tray.Add("Snippet file", files)
+    tray.Add("Secret lock...", ShowLockDialog)
+    if SecretLock.Enabled
+        tray.Add("Lock secrets now", (*) => SetSecretLock(true))
     tray.Add()
     tray.Add("Reload",  (*) => Reload())
     tray.Add("Suspend", ToggleSuspend)
@@ -47,7 +67,7 @@ ToggleSuspend(itemName, itemPos, menu) {
     else
         menu.Uncheck(itemName)
     SetAppIcon(A_IsSuspended)
-    A_IconTip := APP_NAME " " APP_VERSION (A_IsSuspended ? " - SUSPENDED" : "")
+    UpdateTrayTip()
 }
 
 ; ---------------------------------------------------------------------
@@ -70,7 +90,9 @@ SetAppIcon(suspended := false) {
 }
 
 ShowAbout(count) {
-    MsgBox(APP_NAME " " APP_VERSION "`n`n"
+    MsgBox(APP_NAME " " APP_VERSION "`n"
+        . APP_AUTHOR "`n"
+        . "Apache License 2.0`n`n"
         . "Triggers active: " count "`n"
         . "Snippet file:`n" ConfigFile "`n`n"
         . APP_REPO,

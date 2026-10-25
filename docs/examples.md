@@ -1,6 +1,6 @@
 # Examples - learn AHK-Typer in 10 minutes
 
-Version: 1.5
+Version: 1.5.1
 
 ## 1. Try the examples
 
@@ -173,3 +173,7 @@ The full notation guide: [hotkey-notation.md](hotkey-notation.md).
 | Does not type into the Windows sign-in / RDP / UAC prompt | Blocked by Windows since January 2026 | Type it yourself - see [setup-and-security.md](setup-and-security.md#where-snippets-cannot-type) |
 | A login types into the wrong field | The app was slower than the program | Raise **Delay** to 300 |
 | Startup message "already used by" | Two snippets share a trigger for the same windows | Change one trigger |
+
+---
+
+Copyright 2026 Philippe Addelia

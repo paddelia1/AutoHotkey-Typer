@@ -1,7 +1,7 @@
 # AutoHotkey-Typer
 Build a secure AutoHotkey 2.0 typer for strings, passwords and more 
 
-**Version 1.5.0.1** - download **AHK-Typer.exe** from the
+**Version 1.6** - download **AHK-Typer.exe** from the
 [latest release](https://github.com/paddelia1/AutoHotkey-Typer/releases/latest)
 
 AutoHotkey-Typer types text you use often - email addresses, signatures,
@@ -34,6 +34,9 @@ The red **T** icon appears in the system tray.
   your PC can decrypt them. Added from the tray menu, never typed into the
   file by hand
 - Secrets are decrypted only at the moment they are typed
+- **Optional secret lock**: after you have been away, the next secret asks
+  for your PIN once - never while you are working, never after unlocking
+  Windows, never for plain snippets
 - **Login sequences**: one hotkey types username, Tab, password and Enter -
   for VPN clients, web logins, database tools
 - One-page **Add / edit snippet** window for plain text and secrets: hotkey
@@ -149,6 +152,7 @@ to avoid and the AltGr trap on European keyboards, is in
 | Snippet dialog | Add / edit / delete plain snippets and secrets, hotkey builder, window picker | Done |
 | Conflict checker | Reserved Windows shortcuts, common app shortcuts, AltGr warning, live verdict | Done |
 | Login sequence | Username, Tab, password, optional Enter, in one hotkey | Done |
+| Secret lock | Optional PIN after being away; Windows unlock counts as proof | Done |
 | Examples | Example snippets created in your file on the first start, removable in one click | Done |
 | Release | AHK-Typer.exe with SHA-256 in the release notes, build script | Done |
 | Docs | Where snippets cannot type (Windows credential dialogs, elevated windows), examples guide | Done |
@@ -199,3 +203,7 @@ Passphrases use the **EFF Large Wordlist** by the Electronic Frontier
 Foundation ([eff.org/dice](https://www.eff.org/dice)), licensed under
 [CC BY 3.0 US](https://creativecommons.org/licenses/by/3.0/us/). The four
 hyphenated words were removed; see `src/lib/Wordlist.ahk`.
+
+---
+
+Copyright 2026 Philippe Addelia

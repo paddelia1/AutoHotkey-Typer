@@ -5,9 +5,9 @@ Script            : AutoHotkey-Typer
 FileName          : AutoHotkey-Typer.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 11:55 EDT
+Modified          : 2026-10-25 12:55 EDT
 Preferred Location: src\ (repo AutoHotkey-Typer)
-Version           : 1.5.0.1
+Version           : 1.6
 Purpose           : Types saved text snippets when you press a hotkey or type a
                     short abbreviation (hotstring).
                     Phase 1: core engine, snippet file, tray menu.
@@ -20,20 +20,25 @@ Purpose           : Types saved text snippets when you press a hotkey or type a
                     1.4   : example snippets + switch, AHK-Typer.exe build.
                     1.5   : examples created in the snippet file on first run.
                     1.5.0.1 : docs - start automatically with Windows.
+                    1.5.1 : copyright in About box, .exe properties, docs.
+                    1.6   : optional secret lock (PIN after being away).
+Copyright         : Copyright 2026 Philippe Addelia
 License           : Apache 2.0 - see LICENSE
 */
 
 ;@Ahk2Exe-SetName AHK-Typer
 ;@Ahk2Exe-SetDescription AHK-Typer - types snippets and encrypted secrets
-;@Ahk2Exe-SetVersion 1.5.0.1
+;@Ahk2Exe-SetVersion 1.6
 ;@Ahk2Exe-ExeName ..\dist\AHK-Typer.exe
 ;@Ahk2Exe-SetMainIcon res\AutoHotkey-Typer.ico
 ;@Ahk2Exe-AddResource res\AutoHotkey-Typer-suspended.ico, 206
-;@Ahk2Exe-SetCopyright Philippe Addelia - Apache 2.0
+;@Ahk2Exe-SetCopyright Copyright 2026 Philippe Addelia
+;@Ahk2Exe-SetCompanyName Philippe Addelia
 
 global APP_NAME    := "AutoHotkey-Typer"
-global APP_VERSION := "1.5.0.1"
+global APP_VERSION := "1.6"
 global APP_REPO    := "https://github.com/paddelia1/AutoHotkey-Typer"
+global APP_AUTHOR  := "Copyright 2026 Philippe Addelia"
 
 SetWorkingDir(A_ScriptDir)
 SetTitleMatchMode(2)        ; Window= filters match any part of the title
@@ -48,6 +53,7 @@ Persistent()                ; stay running even if no snippet could be bound
 #Include lib\Wordlist.ahk
 #Include lib\PwGen.ahk
 #Include lib\GeneratorDialog.ahk
+#Include lib\PinLock.ahk
 
 ; ---------------------------------------------------------------------
 ;  Startup
@@ -75,6 +81,7 @@ for old in ["snippets.sample.ini", "settings.ini"]
 loaded  := LoadSnippets(ConfigFile)
 result  := RegisterSnippets(loaded.Snippets)
 
+InitSecretLock()                 ; optional PIN after being away (1.6)
 SetAppIcon()
 BuildTrayMenu(result.Count)
 

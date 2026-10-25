@@ -3,13 +3,15 @@ Script            : AutoHotkey-Typer - Engine
 FileName          : Engine.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 04:05 EDT
+Modified          : 2026-10-25 12:55 EDT
 Preferred Location: src\lib\
-Version           : 1.3
+Version           : 1.6
 Purpose           : Binds snippets to hotkeys / hotstrings and types them.
                     Secrets stay encrypted in memory and are decrypted only
                     at the moment they are typed.
                     1.0.3 : Window= accepts several rules separated by |
+                    1.6   : secrets ask for the PIN first when the optional
+                            secret lock is on and the user was away
                     1.3   : login sequence - username, Tab/Enter, secret,
                             optional Enter
 */
@@ -84,6 +86,8 @@ TypeSnippet(text, *) {
 ; Decrypts just in time, types, then drops the plain text right away.
 ; With a login (1.3): username, Tab or Enter, secret, optional Enter.
 TypeSecret(encrypted, name, login, *) {
+    if !EnsureSecretUnlocked(name)          ; optional secret lock (1.6)
+        return
     try {
         plain := DpapiUnprotect(encrypted)
     } catch {

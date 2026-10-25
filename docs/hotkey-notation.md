@@ -1,6 +1,6 @@
 # Reading and writing hotkeys
 
-Version: 1.4
+Version: 1.5.1
 
 AutoHotkey writes key combinations with short symbols. This page explains
 them, shows which combinations are safe, and which ones to avoid.
@@ -126,3 +126,7 @@ AutoHotkey-Typer applies these rules at startup, and live in the
 If you really want a flagged hotkey (for example Ctrl + Shift + T inside one
 program only), add `AllowRisky=1` to that snippet to silence its warning.
 Blocked hotkeys cannot be overridden.
+
+---
+
+Copyright 2026 Philippe Addelia

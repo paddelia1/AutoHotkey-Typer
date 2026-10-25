@@ -3,9 +3,9 @@ Script            : AutoHotkey-Typer - Config
 FileName          : Config.ahk
 Author            : Philippe Addelia
 Created           : 2026-10-24 13:45 EDT
-Modified          : 2026-10-25 10:55 EDT
+Modified          : 2026-10-25 12:55 EDT
 Preferred Location: src\lib\
-Version           : 1.5
+Version           : 1.6
 Purpose           : Locates, creates, reads and writes the snippet file
                     (snippets.ini). Secrets are stored DPAPI-encrypted.
 */
@@ -82,7 +82,8 @@ LoadSnippets(file) {
     }
 
     for name in StrSplit(sections, "`n", "`r") {
-        if (name = "")
+        ; "" = blank line; "~..." = app settings, not a snippet (1.6)
+        if (name = "" || SubStr(name, 1, 1) = "~")
             continue
 
         enabled := Trim(IniRead(file, name, "Enabled", "1"))
